@@ -483,68 +483,101 @@ title: ITAM System Requirements_V1.0.1
 
 ```
 itam-system/
-├── assets/
-│   ├── css/
-│   │   ├── bootstrap.min.css
-│   │   └── custom.css (glassmorphism styles)
-│   ├── js/
-│   │   ├── bootstrap.bundle.min.js
-│   │   ├── jquery.min.js
-│   │   └── custom.js
-│   └── images/
 ├── config/
-│   ├── database.php (DB connection)
-│   └── config.php (app settings)
-├── includes/
-│   ├── header.php
-│   ├── footer.php
-│   ├── sidebar.php
-│   └── functions.php
+│   ├── database.php              # PDO database connection
+│   ├── config.php                # App constants & settings
+│   └── init.php                  # Session & error handling initialization
+│
 ├── models/
-│   ├── User.php
-│   ├── Asset.php
-│   └── CheckLog.php
+│   ├── Database.php              # Base database class (PDO wrapper)
+│   ├── User.php                  # User model
+│   ├── Asset.php                 # Asset model
+│   └── CheckLog.php              # Check log model
+│
 ├── controllers/
-│   ├── AuthController.php
-│   ├── AssetController.php
-│   ├── UserController.php
-│   └── ReportController.php
+│   ├── AuthController.php        # Login/logout/session
+│   ├── DashboardController.php   # Dashboard logic (Admin/User)
+│   ├── AssetController.php       # CRUD for assets
+│   ├── CheckController.php       # Check-in/Check-out logic
+│   ├── UserController.php        # User management (Admin only)
+│   ├── ReportController.php      # Report generation
+│   └── ProfileController.php     # User profile & password change
+│
 ├── views/
+│   ├── layouts/
+│   │   ├── header.php            # Common header with navigation
+│   │   ├── footer.php            # Common footer
+│   │   └── sidebar.php           # Admin/User sidebar navigation
+│   │
+│   ├── auth/
+│   │   └── login.php             # Login page
+│   │
 │   ├── admin/
-│   │   ├── dashboard.php
+│   │   ├── dashboard.php         # Admin dashboard with statistics
 │   │   ├── assets/
-│   │   ├── reports/
-│   │   └── users/
+│   │   │   ├── index.php         # Asset list (table view)
+│   │   │   ├── create.php        # Add new asset form
+│   │   │   ├── edit.php          # Edit asset form
+│   │   │   └── view.php          # Asset detail view
+│   │   ├── checkin-checkout/
+│   │   │   ├── checkout.php      # Check-out form
+│   │   │   ├── checkin.php       # Check-in form
+│   │   │   └── history.php       # Check logs history
+│   │   ├── users/
+│   │   │   ├── index.php         # User list
+│   │   │   ├── create.php        # Add new user
+│   │   │   └── edit.php          # Edit user
+│   │   └── reports/
+│   │       └── index.php         # Report generation page
+│   │
 │   ├── user/
-│   │   ├── dashboard.php
-│   │   └── profile.php
-│   └── auth/
-│       └── login.php
-├── api/ (optional - for AJAX endpoints)
+│   │   ├── dashboard.php         # User dashboard (assigned assets)
+│   │   └── profile.php           # User profile & password change
+│   │
+│   └── errors/
+│       ├── 404.php               # Not found page
+│       └── 403.php               # Unauthorized access page
+│
+├── public/
+│   ├── assets/
+│   │   ├── css/
+│   │   │   ├── bootstrap.min.css
+│   │   │   └── custom.css        # Glassmorphism & custom styles
+│   │   ├── js/
+│   │   │   ├── bootstrap.bundle.min.js
+│   │   │   ├── jquery.min.js
+│   │   │   └── custom.js         # Custom JS & validation
+│   │   └── images/
+│   │       └── logo.png
+│   │
+│   └── uploads/
+│       └── assets/               # Asset photos
+│
+├── helpers/
+│   ├── functions.php             # Utility functions (sanitize, validate)
+│   ├── auth_helper.php           # Auth check functions (isAdmin, isLoggedIn)
+│   └── validation.php            # Form validation functions
+│
+├── api/                          # Optional - for AJAX endpoints
 │   ├── assets.php
 │   ├── users.php
 │   └── check-logs.php
-├── uploads/ (for asset photos)
-├── reports/ (generated reports)
-├── index.php
-├── logout.php
-└── .htaccess
+│
+├── reports/                      # Generated reports (temp storage)
+│   ├── pdf/
+│   └── excel/
+│
+├── sql/
+│   └── schema.sql                # Database schema
+│
+├── .htaccess                     # Apache rewrite rules
+├── index.php                     # Front controller/router
+├── logout.php                    # Logout handler
+└── README.md                     # Project documentation
+
 ```
 
----
 
-## Project Phases
-
-1. ✅ Requirements Gathering
-2. ✅ Database Design
-3. ✅ UI/UX Design & Wireframing
-4. 🔄 Frontend Development with PHP + Bootstrap (In Progress)
-5. 🔄 Backend Development with PHP (In Progress)
-6. ⏳ Integration & Testing
-7. ⏳ Deployment to PHP Hosting
-8. ⏳ User Training & Documentation
-
----
 
 **Document Version:** 1.0  
 **Last Updated:** January 16, 2026  

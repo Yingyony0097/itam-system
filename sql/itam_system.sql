@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 28, 2026 at 07:31 AM
+-- Generation Time: Jan 28, 2026 at 12:14 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -36,7 +36,7 @@ CREATE TABLE `assets` (
   `brand` varchar(100) DEFAULT NULL,
   `model` varchar(100) DEFAULT NULL,
   `purchase_date` date DEFAULT NULL,
-  `purchase_price` decimal(10,2) DEFAULT NULL,
+  `purchase_price` decimal(15,2) DEFAULT NULL,
   `status` enum('Available','In Use') NOT NULL DEFAULT 'Available',
   `assigned_to` int(11) DEFAULT NULL,
   `assigned_date` date DEFAULT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL COMMENT 'Hashed with password_hash()',
+  `password` varchar(255) NOT NULL COMMENT 'Hashed with bcrypt',
   `role` enum('Admin','User') NOT NULL DEFAULT 'User',
   `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -84,8 +84,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `name`, `email`, `password`, `role`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, 'System Administrator', 'admin@pline.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 1, '2026-01-28 06:29:51', '2026-01-28 06:29:51'),
-(2, 'Test User', 'user@pline.com', '$2y$10$YourHashedPasswordHere', 'User', 1, '2026-01-28 06:29:51', '2026-01-28 06:29:51');
+(1, 'System Administrator', 'admin@pline.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 1, '2026-01-28 11:13:34', '2026-01-28 11:13:34'),
+(2, 'General User', 'user@pline.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'User', 1, '2026-01-28 11:13:34', '2026-01-28 11:13:34');
 
 --
 -- Indexes for dumped tables
@@ -98,22 +98,19 @@ ALTER TABLE `assets`
   ADD PRIMARY KEY (`asset_id`),
   ADD UNIQUE KEY `asset_code` (`asset_code`),
   ADD UNIQUE KEY `serial_number` (`serial_number`),
-  ADD KEY `idx_asset_code` (`asset_code`),
-  ADD KEY `idx_serial_number` (`serial_number`),
   ADD KEY `idx_category` (`category`),
   ADD KEY `idx_status` (`status`),
-  ADD KEY `idx_assigned_to` (`assigned_to`);
+  ADD KEY `fk_assets_assigned_to` (`assigned_to`);
 
 --
 -- Indexes for table `check_logs`
 --
 ALTER TABLE `check_logs`
   ADD PRIMARY KEY (`log_id`),
-  ADD KEY `idx_asset_id` (`asset_id`),
-  ADD KEY `idx_user_id` (`user_id`),
-  ADD KEY `idx_action_type` (`action_type`),
   ADD KEY `idx_action_date` (`action_date`),
-  ADD KEY `idx_performed_by` (`performed_by`);
+  ADD KEY `fk_logs_asset_id` (`asset_id`),
+  ADD KEY `fk_logs_user_id` (`user_id`),
+  ADD KEY `fk_logs_performed_by` (`performed_by`);
 
 --
 -- Indexes for table `users`
@@ -121,7 +118,6 @@ ALTER TABLE `check_logs`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `idx_email` (`email`),
   ADD KEY `idx_role` (`role`),
   ADD KEY `idx_is_active` (`is_active`);
 
@@ -155,15 +151,15 @@ ALTER TABLE `users`
 -- Constraints for table `assets`
 --
 ALTER TABLE `assets`
-  ADD CONSTRAINT `assets_ibfk_1` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_assets_assigned_to` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `check_logs`
 --
 ALTER TABLE `check_logs`
-  ADD CONSTRAINT `check_logs_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `check_logs_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
-  ADD CONSTRAINT `check_logs_ibfk_3` FOREIGN KEY (`performed_by`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `fk_logs_asset_id` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_logs_performed_by` FOREIGN KEY (`performed_by`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `fk_logs_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

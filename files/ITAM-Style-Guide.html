@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITAM System - Style Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Colors */
+            --color-primary: #2563EB;
+            --color-primary-dark: #1E40AF;
+            --color-secondary: #7C3AED;
+            --color-success: #10B981;
+            --color-warning: #F59E0B;
+            --color-error: #EF4444;
+            --color-info: #3B82F6;
+            
+            /* Grays */
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .header h1 {
+            font-size: 48px;
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--gray-600);
+            font-size: 18px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 6px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--color-primary), var(--color-secondary));
+            border-radius: 3px;
+        }
+
+        .subsection {
+            margin-bottom: 40px;
+        }
+
+        .subsection-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--gray-700);
+        }
+
+        /* Color Palette */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .color-card {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .color-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .color-swatch {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .color-info {
+            padding: 16px;
+            background: white;
+        }
+
+        .color-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .color-codes {
+            font-size: 12px;
+            color: var(--gray-600);
+            font-family: 'Courier New', monospace;
+        }
+
+        .color-codes div {
+            margin-bottom: 4px;
+        }
+
+        /* Typography */
+        .type-example {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        .type-label {
+            font-size: 12px;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        h1.example { font-size: 36px; font-weight: 700; }
+        h2.example { font-size: 24px; font-weight: 600; }
+        h3.example { font-size: 20px; font-weight: 600; }
+        p.example { font-size: 16px; font-weight: 400; }
+        small.example { font-size: 14px; font-weight: 400; }
+
+        /* Buttons */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .btn-icon {
+            padding: 12px;
+            border-radius: var(--radius-md);
+            background: var(--gray-100);
+            color: var(--gray-700);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+        }
+
+        .btn-icon:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Input Fields */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+
+        /* Badges */
+        .badge-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .badge-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .badge-error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Spacing Scale */
+        .spacing-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .spacing-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .spacing-box {
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+            height: 40px;
+            border-radius: 4px;
+        }
+
+        .spacing-label {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 80px;
+        }
+
+        /* Shadow Examples */
+        .shadow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .shadow-example {
+            padding: 30px;
+            background: white;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .shadow-sm {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .shadow-md {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .shadow-lg {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .shadow-xl {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--gray-800);
+            color: #00FF00;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>ITAM System Style Guide</h1>
+            <p>IT Asset Management - Design System v1.0</p>
+            <p style="margin-top: 10px; font-size: 14px;">P-line Company | Vientiane, Laos</p>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="section">
+            <h2 class="section-title">Color Palette</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">Primary Colors</h3>
+                <div class="color-grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #2563EB;">Primary Blue</div>
+                        <div class="color-info">
+                            <div class="color-name">Primary Blue</div>
+                            <div class="color-codes">
+                                <div>HEX: #2563EB</div>
+                                <div>RGB: 37, 99, 235</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #7C3AED;">Primary Purple</div>
+                        <div class="color-info">
+                            <div class="color-name">Primary Purple</div>
+                            <div class="color-codes">
+                                <div>HEX: #7C3AED</div>
+                                <div>RGB: 124, 58, 237</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: linear-gradient(to right, #2563EB, #7C3AED);">Gradient</div>
+                        <div class="color-info">
+                            <div class="color-name">Primary Gradient</div>
+                            <div class="color-codes">
+                                <div>Blue → Purple</div>
+                                <div>Main brand gradient</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Semantic Colors</h3>
+                <div class="color-grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #10B981;">Success</div>
+                        <div class="color-info">
+                            <div class="color-name">Success Green</div>
+                            <div class="color-codes">
+                                <div>HEX: #10B981</div>
+                                <div>Available status</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #F59E0B;">Warning</div>
+                        <div class="color-info">
+                            <div class="color-name">Warning Orange</div>
+                            <div class="color-codes">
+                                <div>HEX: #F59E0B</div>
+                                <div>In Use status</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #EF4444;">Error</div>
+                        <div class="color-info">
+                            <div class="color-name">Error Red</div>
+                            <div class="color-codes">
+                                <div>HEX: #EF4444</div>
+                                <div>Errors, delete</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #3B82F6;">Info</div>
+                        <div class="color-info">
+                            <div class="color-name">Info Blue</div>
+                            <div class="color-codes">
+                                <div>HEX: #3B82F6</div>
+                                <div>Information</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Neutral Colors</h3>
+                <div class="color-grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #F9FAFB; color: #374151;">Gray 50</div>
+                        <div class="color-info">
+                            <div class="color-name">Gray 50</div>
+                            <div class="color-codes">
+                                <div>HEX: #F9FAFB</div>
+                                <div>Backgrounds</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #E5E7EB; color: #374151;">Gray 200</div>
+                        <div class="color-info">
+                            <div class="color-name">Gray 200</div>
+                            <div class="color-codes">
+                                <div>HEX: #E5E7EB</div>
+                                <div>Borders</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #4B5563;">Gray 600</div>
+                        <div class="color-info">
+                            <div class="color-name">Gray 600</div>
+                            <div class="color-codes">
+                                <div>HEX: #4B5563</div>
+                                <div>Secondary text</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: #1F2937;">Gray 800</div>
+                        <div class="color-info">
+                            <div class="color-name">Gray 800</div>
+                            <div class="color-codes">
+                                <div>HEX: #1F2937</div>
+                                <div>Primary text</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="section">
+            <h2 class="section-title">Typography</h2>
+            
+            <div class="type-example">
+                <div class="type-label">Heading 1 - 36px / Bold</div>
+                <h1 class="example">The quick brown fox jumps over the lazy dog</h1>
+            </div>
+
+            <div class="type-example">
+                <div class="type-label">Heading 2 - 24px / Semibold</div>
+                <h2 class="example">The quick brown fox jumps over the lazy dog</h2>
+            </div>
+
+            <div class="type-example">
+                <div class="type-label">Heading 3 - 20px / Semibold</div>
+                <h3 class="example">The quick brown fox jumps over the lazy dog</h3>
+            </div>
+
+            <div class="type-example">
+                <div class="type-label">Body Text - 16px / Regular</div>
+                <p class="example">The quick brown fox jumps over the lazy dog. This is the standard body text used throughout the application for content, descriptions, and paragraphs.</p>
+            </div>
+
+            <div class="type-example">
+                <div class="type-label">Small Text - 14px / Regular</div>
+                <small class="example">The quick brown fox jumps over the lazy dog. Used for secondary information, captions, and helper text.</small>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="section">
+            <h2 class="section-title">Buttons</h2>
+            
+            <div class="button-grid">
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-secondary">Secondary Button</button>
+                <button class="btn btn-success">Success Button</button>
+                <button class="btn btn-danger">Danger Button</button>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3 class="subsection-title">Icon Buttons</h3>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-icon">👁</button>
+                    <button class="btn-icon">✏️</button>
+                    <button class="btn-icon">🗑️</button>
+                    <button class="btn-icon">➕</button>
+                </div>
+            </div>
+
+            <div class="code-block">
+&lt;!-- Primary Button --&gt;
+&lt;button class="btn btn-primary"&gt;Save Asset&lt;/button&gt;
+
+&lt;!-- Secondary Button --&gt;
+&lt;button class="btn btn-secondary"&gt;Cancel&lt;/button&gt;
+            </div>
+        </div>
+
+        <!-- Form Elements -->
+        <div class="section">
+            <h2 class="section-title">Form Elements</h2>
+            
+            <div class="grid-2">
+                <div class="input-group">
+                    <label class="input-label">Text Input</label>
+                    <input type="text" class="input-field" placeholder="Enter text...">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Email Input</label>
+                    <input type="email" class="input-field" placeholder="email@example.com">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Select Dropdown</label>
+                    <select class="input-field">
+                        <option>Choose an option</option>
+                        <option>Computer</option>
+                        <option>Phone</option>
+                        <option>Printer</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Date Picker</label>
+                    <input type="date" class="input-field">
+                </div>
+            </div>
+
+            <div class="code-block">
+&lt;div class="input-group"&gt;
+  &lt;label class="input-label"&gt;Asset Name&lt;/label&gt;
+  &lt;input type="text" class="input-field" placeholder="Enter asset name"&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- Cards -->
+        <div class="section">
+            <h2 class="section-title">Cards</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">Glassmorphism Card</h3>
+                <div class="glass-card">
+                    <h3>Glass Effect Card</h3>
+                    <p>This card uses glassmorphism design with backdrop blur and semi-transparent background for a modern, elegant look.</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Statistics Card</h3>
+                <div class="grid-2">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-label">Total Assets</div>
+                                <div class="stat-value">156</div>
+                                <div style="color: #10B981; font-size: 12px; margin-top: 4px;">+12 this month</div>
+                            </div>
+                            <div class="stat-icon">📦</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div>
+                                <div class="stat-label">Total Value</div>
+                                <div class="stat-value">$245K</div>
+                                <div style="color: #10B981; font-size: 12px; margin-top: 4px;">+5.2% value</div>
+                            </div>
+                            <div class="stat-icon">💰</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="section">
+            <h2 class="section-title">Badges & Tags</h2>
+            
+            <div class="badge-grid">
+                <span class="badge badge-success">Available</span>
+                <span class="badge badge-warning">In Use</span>
+                <span class="badge badge-info">Computer</span>
+                <span class="badge badge-error">Deleted</span>
+            </div>
+
+            <div class="code-block">
+&lt;span class="badge badge-success"&gt;Available&lt;/span&gt;
+&lt;span class="badge badge-warning"&gt;In Use&lt;/span&gt;
+&lt;span class="badge badge-info"&gt;Computer&lt;/span&gt;
+            </div>
+        </div>
+
+        <!-- Spacing -->
+        <div class="section">
+            <h2 class="section-title">Spacing Scale</h2>
+            
+            <div class="spacing-grid">
+                <div class="spacing-item">
+                    <div class="spacing-label">xs (4px)</div>
+                    <div class="spacing-box" style="width: 4px;"></div>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-label">sm (8px)</div>
+                    <div class="spacing-box" style="width: 8px;"></div>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-label">md (16px)</div>
+                    <div class="spacing-box" style="width: 16px;"></div>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-label">lg (24px)</div>
+                    <div class="spacing-box" style="width: 24px;"></div>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-label">xl (32px)</div>
+                    <div class="spacing-box" style="width: 32px;"></div>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-label">2xl (48px)</div>
+                    <div class="spacing-box" style="width: 48px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shadows -->
+        <div class="section">
+            <h2 class="section-title">Shadows</h2>
+            
+            <div class="shadow-grid">
+                <div class="shadow-example shadow-sm">
+                    <div>Small Shadow</div>
+                    <div style="font-size: 12px; color: var(--gray-600); margin-top: 8px;">Buttons, small cards</div>
+                </div>
+                <div class="shadow-example shadow-md">
+                    <div>Medium Shadow</div>
+                    <div style="font-size: 12px; color: var(--gray-600); margin-top: 8px;">Cards, dropdowns</div>
+                </div>
+                <div class="shadow-example shadow-lg">
+                    <div>Large Shadow</div>
+                    <div style="font-size: 12px; color: var(--gray-600); margin-top: 8px;">Modals, panels</div>
+                </div>
+                <div class="shadow-example shadow-xl">
+                    <div>XLarge Shadow</div>
+                    <div style="font-size: 12px; color: var(--gray-600); margin-top: 8px;">Floating elements</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; padding-top: 40px; border-top: 2px solid var(--gray-200); margin-top: 60px;">
+            <h3 style="margin-bottom: 10px;">ITAM System Design System</h3>
+            <p style="color: var(--gray-600);">Version 1.0 | January 2026</p>
+            <p style="color: var(--gray-600); margin-top: 8px;">P-line Company, Vientiane, Laos</p>
+        </div>
+    </div>
+</body>
+</html>
