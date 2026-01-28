@@ -1,5 +1,10 @@
 ﻿<?php
-require_once '../../config/init.php';
+/**
+ * Login View
+ * ITAM System - P-line Company
+ * 
+ * Note: config/init.php is already loaded by index.php
+ */
 
 // Redirect if already logged in
 if (isLoggedIn()) {
@@ -88,118 +93,3 @@ unset($_SESSION['old_email']);
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
         }
-        
-        .form-label {
-            color: white;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
-        .btn-login {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 10px;
-            padding: 0.75rem;
-            font-weight: 600;
-            color: white;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-login:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
-        }
-        
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-        
-        .footer-text {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.875rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="glass-card mx-auto">
-            <div class="login-header">
-                <h1><?php echo APP_NAME; ?></h1>
-                <p>IT Asset Management System</p>
-            </div>
-            
-            <!-- Flash Messages -->
-            <?php if ($flash): ?>
-                <div class="alert alert-<?php echo $flash['type'] === 'error' ? 'danger' : $flash['type']; ?> alert-dismissible fade show" role="alert">
-                    <?php echo escape($flash['message']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-            
-            <!-- Login Errors -->
-            <?php if (!empty($errors)): ?>
-                <div class="alert alert-danger" role="alert">
-                    <ul class="mb-0">
-                        <?php foreach ($errors as $error): ?>
-                            <li><?php echo escape($error); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-            
-            <!-- Login Form -->
-            <form action="<?php echo url('index.php'); ?>" method="POST">
-                <!-- CSRF Token (REQ-SEC-007) -->
-                <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
-                
-                <!-- Email -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input 
-                        type="email" 
-                        class="form-control" 
-                        id="email" 
-                        name="email" 
-                        placeholder="Enter your email"
-                        value="<?php echo escape($oldEmail); ?>"
-                        required
-                        autofocus
-                    >
-                </div>
-                
-                <!-- Password -->
-                <div class="mb-4">
-                    <label for="password" class="form-label">Password</label>
-                    <input 
-                        type="password" 
-                        class="form-control" 
-                        id="password" 
-                        name="password" 
-                        placeholder="Enter your password"
-                        required
-                    >
-                </div>
-                
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-login">
-                    Login
-                </button>
-            </form>
-            
-            <!-- Footer -->
-            <div class="footer-text">
-                <p class="mb-0">&copy; <?php echo date('Y'); ?> P-line Company</p>
-                <small>Version <?php echo APP_VERSION; ?></small>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
