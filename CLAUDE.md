@@ -22,8 +22,8 @@
 ## 🚀 Current Progress (Phase 3: Development)
 - [x] Phase 1: Requirements Gathering (Done)
 - [x] Phase 2: Database Design & Project Structure (Done)
-Phase 3A: Core configuration files (config/database.php, config/init.php)  (Next)
-Phase 3B: Base models (Database.php, User.php, Asset.php, CheckLog.php)
+- [x]Phase 3A: Core configuration files (config/database.php, config/init.php)  (Done)
+Phase 3B: Base models (Database.php, User.php, Asset.php, CheckLog.php) (Next)
 Phase 3C: Authentication controller and login view
 Phase 3D: Admin dashboard with statistics
 Phase 3E: Asset CRUD operations
