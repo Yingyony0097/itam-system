@@ -125,8 +125,37 @@ function validate_date($date, $format = 'Y-m-d') {
 }
 
 /**
+ * Validate login form data
+ *
+ * @param array $data Login form data ['email', 'password']
+ * @return array Array of error messages (empty if valid)
+ */
+function validate_login_form($data) {
+    $errors = [];
+
+    // Email - Required and valid format (REQ-VAL-002)
+    if (empty($data['email'])) {
+        $errors[] = 'Email is required';
+    } else {
+        $email_validation = validate_email($data['email']);
+        if (!$email_validation['valid']) {
+            $errors[] = $email_validation['error'];
+        }
+    }
+
+    // Password - Required (REQ-VAL-001)
+    if (empty($data['password'])) {
+        $errors[] = 'Password is required';
+    } elseif (strlen($data['password']) < 6) {
+        $errors[] = 'Password must be at least 6 characters';
+    }
+
+    return $errors;
+}
+
+/**
  * Validate asset data
- * 
+ *
  * @param array $data Asset data to validate
  * @param bool $is_update Whether this is an update operation
  * @return array ['valid' => bool, 'errors' => array]

@@ -2,11 +2,16 @@
 /**
  * ITAM System - Main Entry Point
  * Simple Router with Authentication Check
- * 
+ *
  * @package ITAM System
  * @version 1.0
  * @organization P-line Company
  */
+
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
 // Initialize application
 require_once __DIR__ . '/config/init.php';

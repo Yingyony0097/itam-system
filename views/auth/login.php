@@ -255,22 +255,19 @@
             </div>
             
             <!-- Flash Messages -->
-            <?php if ($error_message = get_flash('error')): ?>
-                <div class="alert alert-danger">
-                    <?php echo $error_message; ?>
-                </div>
-            <?php endif; ?>
-            
-            <?php if ($success_message = get_flash('success')): ?>
-                <div class="alert alert-success">
-                    <?php echo $success_message; ?>
+            <?php
+            $flash = get_flash();
+            if ($flash):
+            ?>
+                <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?>">
+                    <?= htmlspecialchars($flash['message']) ?>
                 </div>
             <?php endif; ?>
             
             <!-- Login Form -->
             <form method="POST" action="<?php echo BASE_URL; ?>/index.php?action=authenticate" id="loginForm">
                 <!-- CSRF Token (REQ-SEC-007) -->
-                <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generate_csrf_token()) ?>">
                 
                 <!-- Email Field -->
                 <div class="mb-3">

@@ -11,9 +11,6 @@ ob_start();
 // Load configuration
 require_once __DIR__ . '/config.php';
 
-// Load database connection
-require_once __DIR__ . '/database.php';
-
 // Load helper functions
 require_once HELPER_PATH . '/functions.php';
 require_once HELPER_PATH . '/auth_helper.php';

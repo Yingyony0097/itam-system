@@ -43,11 +43,106 @@ function escape($data) {
 }
 
 /**
+ * Check if user is logged in (REQ-AUTH-003)
+ * @return bool
+ */
+function is_logged_in() {
+    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+}
+
+/**
+ * Get current user ID
+ * @return int|null
+ */
+function get_user_id() {
+    return $_SESSION['user_id'] ?? null;
+}
+
+/**
+ * Get current user role (REQ-AUTH-002)
+ * @return string|null
+ */
+function get_user_role() {
+    return $_SESSION['user_role'] ?? null;
+}
+
+/**
+ * Get current user name
+ * @return string|null
+ */
+function get_user_name() {
+    return $_SESSION['user_name'] ?? null;
+}
+
+/**
+ * Get current user email
+ * @return string|null
+ */
+function get_user_email() {
+    return $_SESSION['user_email'] ?? null;
+}
+
+/**
+ * Check if user is admin (REQ-AUTH-002)
+ * @return bool
+ */
+function is_admin() {
+    return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'Admin';
+}
+
+/**
+ * Set user session (REQ-AUTH-003)
+ * @param int $user_id
+ * @param string $name
+ * @param string $email
+ * @param string $role
+ */
+function set_user_session($user_id, $name, $email, $role) {
+    // Regenerate session ID to prevent session fixation (REQ-SEC-002)
+    session_regenerate_id(true);
+
+    // Set session variables
+    $_SESSION['user_id'] = $user_id;
+    $_SESSION['user_name'] = $name;
+    $_SESSION['user_email'] = $email;
+    $_SESSION['user_role'] = $role;
+    $_SESSION['last_activity'] = time();
+}
+
+/**
+ * Clear user session (REQ-AUTH-004)
+ */
+function clear_user_session() {
+    // Unset all session variables
+    $_SESSION = [];
+
+    // Destroy session cookie
+    if (isset($_COOKIE[session_name()])) {
+        setcookie(session_name(), '', time() - 3600, '/');
+    }
+
+    // Destroy session
+    session_destroy();
+}
+
+/**
  * Generate CSRF token (REQ-SEC-007)
  * @return string
  */
+function generate_csrf_token() {
+    if (!isset($_SESSION[CSRF_TOKEN_NAME])) {
+        $_SESSION[CSRF_TOKEN_NAME] = bin2hex(random_bytes(32));
+        $_SESSION[CSRF_TOKEN_NAME . '_time'] = time();
+    }
+    return $_SESSION[CSRF_TOKEN_NAME];
+}
+
+/**
+ * Get CSRF token (REQ-SEC-007)
+ * @return string
+ */
 function csrf_token() {
-    return $_SESSION[CSRF_TOKEN_NAME] ?? '';
+    return generate_csrf_token();
 }
 
 /**
