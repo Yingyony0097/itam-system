@@ -1,342 +1,269 @@
 ﻿<?php
 /**
- * Form Validation Helper Functions
+ * Validation Helper Functions
  * ITAM System - P-line Company
- * Security: REQ-VAL-001 to REQ-VAL-010
+ * 
+ * Server-side validation functions for forms
  */
 
 /**
- * Validate required field (REQ-VAL-001)
- * @param string $value
- * @return bool
+ * Validate required field
+ * 
+ * @param mixed $value Field value
+ * @param string $field_name Field name for error message
+ * @return array ['valid' => bool, 'error' => string|null]
  */
-function validate_required($value) {
-    return !empty(trim($value));
+function validate_required($value, $field_name = 'Field') {
+    if (is_empty($value)) {
+        return [
+            'valid' => false,
+            'error' => "$field_name is required"
+        ];
+    }
+    return ['valid' => true, 'error' => null];
 }
 
 /**
  * Validate email format (REQ-VAL-002)
- * @param string $email
- * @return bool
+ * 
+ * @param string $email Email address
+ * @return array ['valid' => bool, 'error' => string|null]
  */
 function validate_email($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-}
-
-/**
- * Validate password strength (REQ-VAL-006)
- * Minimum 8 characters, at least one uppercase, one lowercase, one number
- * @param string $password
- * @return array ['valid' => bool, 'message' => string]
- */
-function validate_password($password) {
-    $errors = [];
-    
-    if (strlen($password) < 8) {
-        $errors[] = "Password must be at least 8 characters long";
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return [
+            'valid' => false,
+            'error' => 'Invalid email format'
+        ];
     }
-    
-    if (!preg_match('/[A-Z]/', $password)) {
-        $errors[] = "Password must contain at least one uppercase letter";
-    }
-    
-    if (!preg_match('/[a-z]/', $password)) {
-        $errors[] = "Password must contain at least one lowercase letter";
-    }
-    
-    if (!preg_match('/[0-9]/', $password)) {
-        $errors[] = "Password must contain at least one number";
-    }
-    
-    return [
-        'valid' => empty($errors),
-        'message' => implode('. ', $errors)
-    ];
-}
-
-/**
- * Validate date format (REQ-VAL-004)
- * @param string $date
- * @param string $format
- * @return bool
- */
-function validate_date($date, $format = 'Y-m-d') {
-    $d = DateTime::createFromFormat($format, $date);
-    return $d && $d->format($format) === $date;
-}
-
-/**
- * Validate positive number (REQ-VAL-005)
- * @param mixed $value
- * @return bool
- */
-function validate_positive_number($value) {
-    return is_numeric($value) && $value > 0;
-}
-
-/**
- * Validate integer
- * @param mixed $value
- * @return bool
- */
-function validate_integer($value) {
-    return filter_var($value, FILTER_VALIDATE_INT) !== false;
-}
-
-/**
- * Validate decimal/float
- * @param mixed $value
- * @return bool
- */
-function validate_decimal($value) {
-    return filter_var($value, FILTER_VALIDATE_FLOAT) !== false;
+    return ['valid' => true, 'error' => null];
 }
 
 /**
  * Validate string length
- * @param string $value
- * @param int $min
- * @param int $max
- * @return bool
+ * 
+ * @param string $value String to validate
+ * @param int $min Minimum length
+ * @param int $max Maximum length
+ * @param string $field_name Field name for error message
+ * @return array ['valid' => bool, 'error' => string|null]
  */
-function validate_length($value, $min, $max = null) {
+function validate_length($value, $min = 0, $max = 255, $field_name = 'Field') {
     $length = strlen($value);
     
     if ($length < $min) {
-        return false;
+        return [
+            'valid' => false,
+            'error' => "$field_name must be at least $min characters"
+        ];
     }
     
-    if ($max !== null && $length > $max) {
-        return false;
+    if ($length > $max) {
+        return [
+            'valid' => false,
+            'error' => "$field_name must not exceed $max characters"
+        ];
     }
     
-    return true;
+    return ['valid' => true, 'error' => null];
 }
 
 /**
- * Validate unique email in database
- * @param string $email
- * @param int|null $exclude_user_id
- * @return bool
+ * Validate numeric value
+ * 
+ * @param mixed $value Value to validate
+ * @param float $min Minimum value
+ * @param float $max Maximum value (optional)
+ * @param string $field_name Field name for error message
+ * @return array ['valid' => bool, 'error' => string|null]
  */
-function validate_unique_email($email, $exclude_user_id = null) {
-    try {
-        $db = new Database();
-        $conn = $db->connect();
-        
-        $sql = "SELECT user_id FROM users WHERE email = :email";
-        
-        if ($exclude_user_id) {
-            $sql .= " AND user_id != :user_id";
-        }
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':email', $email);
-        
-        if ($exclude_user_id) {
-            $stmt->bindParam(':user_id', $exclude_user_id, PDO::PARAM_INT);
-        }
-        
-        $stmt->execute();
-        return $stmt->rowCount() === 0;
-        
-    } catch (PDOException $e) {
-        error_log("Validation Error: " . $e->getMessage());
-        return false;
-    }
-}
-
-/**
- * Validate unique serial number
- * @param string $serial_number
- * @param int|null $exclude_asset_id
- * @return bool
- */
-function validate_unique_serial($serial_number, $exclude_asset_id = null) {
-    if (empty($serial_number)) {
-        return true; // Serial number is optional
+function validate_numeric($value, $min = 0, $max = null, $field_name = 'Field') {
+    if (!is_numeric($value)) {
+        return [
+            'valid' => false,
+            'error' => "$field_name must be a number"
+        ];
     }
     
-    try {
-        $db = new Database();
-        $conn = $db->connect();
-        
-        $sql = "SELECT asset_id FROM assets WHERE serial_number = :serial_number";
-        
-        if ($exclude_asset_id) {
-            $sql .= " AND asset_id != :asset_id";
-        }
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':serial_number', $serial_number);
-        
-        if ($exclude_asset_id) {
-            $stmt->bindParam(':asset_id', $exclude_asset_id, PDO::PARAM_INT);
-        }
-        
-        $stmt->execute();
-        return $stmt->rowCount() === 0;
-        
-    } catch (PDOException $e) {
-        error_log("Validation Error: " . $e->getMessage());
-        return false;
+    $num_value = floatval($value);
+    
+    if ($num_value < $min) {
+        return [
+            'valid' => false,
+            'error' => "$field_name must be at least $min"
+        ];
     }
+    
+    if ($max !== null && $num_value > $max) {
+        return [
+            'valid' => false,
+            'error' => "$field_name must not exceed $max"
+        ];
+    }
+    
+    return ['valid' => true, 'error' => null];
 }
 
 /**
- * Validate asset form data
- * @param array $data
- * @param int|null $asset_id For edit mode
+ * Validate date format (REQ-VAL-004)
+ * 
+ * @param string $date Date string
+ * @param string $format Expected format (default: Y-m-d)
+ * @return array ['valid' => bool, 'error' => string|null]
+ */
+function validate_date($date, $format = 'Y-m-d') {
+    $d = DateTime::createFromFormat($format, $date);
+    
+    if (!$d || $d->format($format) !== $date) {
+        return [
+            'valid' => false,
+            'error' => 'Invalid date format. Expected: ' . $format
+        ];
+    }
+    
+    return ['valid' => true, 'error' => null];
+}
+
+/**
+ * Validate asset data
+ * 
+ * @param array $data Asset data to validate
+ * @param bool $is_update Whether this is an update operation
  * @return array ['valid' => bool, 'errors' => array]
  */
-function validate_asset_form($data, $asset_id = null) {
+function validate_asset_data($data, $is_update = false) {
     $errors = [];
     
-    // Asset name (required)
-    if (!validate_required($data['asset_name'] ?? '')) {
-        $errors['asset_name'] = "Asset name is required";
-    } elseif (!validate_length($data['asset_name'], 1, 200)) {
-        $errors['asset_name'] = "Asset name must be between 1 and 200 characters";
-    }
-    
-    // Category (required)
-    if (!validate_required($data['category'] ?? '')) {
-        $errors['category'] = "Category is required";
-    }
-    
-    // Serial number (optional but must be unique if provided)
-    if (!empty($data['serial_number'])) {
-        if (!validate_unique_serial($data['serial_number'], $asset_id)) {
-            $errors['serial_number'] = "Serial number already exists";
-        }
-    }
-    
-    // Purchase price (optional but must be positive if provided)
-    if (!empty($data['purchase_price'])) {
-        if (!validate_positive_number($data['purchase_price'])) {
-            $errors['purchase_price'] = "Purchase price must be a positive number";
-        }
-    }
-    
-    // Purchase date (optional but must be valid if provided)
-    if (!empty($data['purchase_date'])) {
-        if (!validate_date($data['purchase_date'])) {
-            $errors['purchase_date'] = "Invalid date format";
-        }
-    }
-    
-    return [
-        'valid' => empty($errors),
-        'errors' => $errors
-    ];
-}
-
-/**
- * Validate user form data
- * @param array $data
- * @param int|null $user_id For edit mode
- * @return array ['valid' => bool, 'errors' => array]
- */
-function validate_user_form($data, $user_id = null) {
-    $errors = [];
-    
-    // Name (required)
-    if (!validate_required($data['name'] ?? '')) {
-        $errors['name'] = "Name is required";
-    } elseif (!validate_length($data['name'], 1, 100)) {
-        $errors['name'] = "Name must be between 1 and 100 characters";
-    }
-    
-    // Email (required, valid format, unique)
-    if (!validate_required($data['email'] ?? '')) {
-        $errors['email'] = "Email is required";
-    } elseif (!validate_email($data['email'])) {
-        $errors['email'] = "Invalid email format";
-    } elseif (!validate_unique_email($data['email'], $user_id)) {
-        $errors['email'] = "Email already exists";
-    }
-    
-    // Password (required for new user, optional for edit)
-    if ($user_id === null) { // New user
-        if (!validate_required($data['password'] ?? '')) {
-            $errors['password'] = "Password is required";
-        } else {
-            $password_validation = validate_password($data['password']);
-            if (!$password_validation['valid']) {
-                $errors['password'] = $password_validation['message'];
-            }
-        }
-    } else { // Edit user - password optional
-        if (!empty($data['password'])) {
-            $password_validation = validate_password($data['password']);
-            if (!$password_validation['valid']) {
-                $errors['password'] = $password_validation['message'];
-            }
-        }
-    }
-    
-    // Role (required)
-    if (!validate_required($data['role'] ?? '')) {
-        $errors['role'] = "Role is required";
-    } elseif (!in_array($data['role'], ['Admin', 'User'])) {
-        $errors['role'] = "Invalid role";
-    }
-    
-    return [
-        'valid' => empty($errors),
-        'errors' => $errors
-    ];
-}
-
-/**
- * Validate login form data
- * @param array $data
- * @return array ['valid' => bool, 'errors' => array]
- */
-function validate_login_form($data) {
-    $errors = [];
-    
-    if (!validate_required($data['email'] ?? '')) {
-        $errors['email'] = "Email is required";
-    } elseif (!validate_email($data['email'])) {
-        $errors['email'] = "Invalid email format";
-    }
-    
-    if (!validate_required($data['password'] ?? '')) {
-        $errors['password'] = "Password is required";
-    }
-    
-    return [
-        'valid' => empty($errors),
-        'errors' => $errors
-    ];
-}
-
-/**
- * Validate change password form
- * @param array $data
- * @return array ['valid' => bool, 'errors' => array]
- */
-function validate_change_password_form($data) {
-    $errors = [];
-    
-    if (!validate_required($data['current_password'] ?? '')) {
-        $errors['current_password'] = "Current password is required";
-    }
-    
-    if (!validate_required($data['new_password'] ?? '')) {
-        $errors['new_password'] = "New password is required";
+    // Asset Name - Required (REQ-VAL-001)
+    $name_validation = validate_required($data['asset_name'] ?? '', 'Asset Name');
+    if (!$name_validation['valid']) {
+        $errors['asset_name'] = $name_validation['error'];
     } else {
-        $password_validation = validate_password($data['new_password']);
-        if (!$password_validation['valid']) {
-            $errors['new_password'] = $password_validation['message'];
+        $length_validation = validate_length($data['asset_name'], 3, 200, 'Asset Name');
+        if (!$length_validation['valid']) {
+            $errors['asset_name'] = $length_validation['error'];
         }
     }
     
-    if (!validate_required($data['confirm_password'] ?? '')) {
-        $errors['confirm_password'] = "Please confirm your new password";
-    } elseif ($data['new_password'] !== $data['confirm_password']) {
-        $errors['confirm_password'] = "Passwords do not match";
+    // Category - Required
+    $category_validation = validate_required($data['category'] ?? '', 'Category');
+    if (!$category_validation['valid']) {
+        $errors['category'] = $category_validation['error'];
+    }
+    
+    // Serial Number - Optional, but validate length if provided
+    if (!is_empty($data['serial_number'] ?? '')) {
+        $serial_validation = validate_length($data['serial_number'], 1, 100, 'Serial Number');
+        if (!$serial_validation['valid']) {
+            $errors['serial_number'] = $serial_validation['error'];
+        }
+    }
+    
+    // Brand - Optional
+    if (!is_empty($data['brand'] ?? '')) {
+        $brand_validation = validate_length($data['brand'], 1, 100, 'Brand');
+        if (!$brand_validation['valid']) {
+            $errors['brand'] = $brand_validation['error'];
+        }
+    }
+    
+    // Model - Optional
+    if (!is_empty($data['model'] ?? '')) {
+        $model_validation = validate_length($data['model'], 1, 100, 'Model');
+        if (!$model_validation['valid']) {
+            $errors['model'] = $model_validation['error'];
+        }
+    }
+    
+    // Purchase Date - Optional, but validate format if provided (REQ-VAL-004)
+    if (!is_empty($data['purchase_date'] ?? '')) {
+        $date_validation = validate_date($data['purchase_date']);
+        if (!$date_validation['valid']) {
+            $errors['purchase_date'] = $date_validation['error'];
+        }
+    }
+    
+    // Purchase Price - Optional, but validate if provided (REQ-VAL-005)
+    if (!is_empty($data['purchase_price'] ?? '')) {
+        $price_validation = validate_numeric($data['purchase_price'], 0, null, 'Purchase Price');
+        if (!$price_validation['valid']) {
+            $errors['purchase_price'] = $price_validation['error'];
+        }
+    }
+    
+    // Status - Required for updates, default for creates
+    if ($is_update) {
+        $status_validation = validate_required($data['status'] ?? '', 'Status');
+        if (!$status_validation['valid']) {
+            $errors['status'] = $status_validation['error'];
+        } else {
+            // Validate enum values
+            $valid_statuses = ['Available', 'In Use'];
+            if (!in_array($data['status'], $valid_statuses)) {
+                $errors['status'] = 'Invalid status value';
+            }
+        }
+    }
+    
+    return [
+        'valid' => empty($errors),
+        'errors' => $errors
+    ];
+}
+
+/**
+ * Validate user data
+ * 
+ * @param array $data User data to validate
+ * @param bool $is_update Whether this is an update operation
+ * @return array ['valid' => bool, 'errors' => array]
+ */
+function validate_user_data($data, $is_update = false) {
+    $errors = [];
+    
+    // Name - Required
+    $name_validation = validate_required($data['name'] ?? '', 'Name');
+    if (!$name_validation['valid']) {
+        $errors['name'] = $name_validation['error'];
+    }
+    
+    // Email - Required and valid format (REQ-VAL-002)
+    $email_validation = validate_required($data['email'] ?? '', 'Email');
+    if (!$email_validation['valid']) {
+        $errors['email'] = $email_validation['error'];
+    } else {
+        $format_validation = validate_email($data['email']);
+        if (!$format_validation['valid']) {
+            $errors['email'] = $format_validation['error'];
+        }
+    }
+    
+    // Password - Required for new users, optional for updates (REQ-VAL-006)
+    if (!$is_update) {
+        $password_validation = validate_required($data['password'] ?? '', 'Password');
+        if (!$password_validation['valid']) {
+            $errors['password'] = $password_validation['error'];
+        } else {
+            // Password strength validation
+            $password = $data['password'];
+            if (strlen($password) < 8) {
+                $errors['password'] = 'Password must be at least 8 characters';
+            } elseif (!preg_match('/[A-Z]/', $password)) {
+                $errors['password'] = 'Password must contain at least one uppercase letter';
+            } elseif (!preg_match('/[a-z]/', $password)) {
+                $errors['password'] = 'Password must contain at least one lowercase letter';
+            } elseif (!preg_match('/[0-9]/', $password)) {
+                $errors['password'] = 'Password must contain at least one number';
+            }
+        }
+    }
+    
+    // Role - Required
+    if (isset($data['role'])) {
+        $valid_roles = ['Admin', 'User'];
+        if (!in_array($data['role'], $valid_roles)) {
+            $errors['role'] = 'Invalid role value';
+        }
     }
     
     return [
