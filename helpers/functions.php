@@ -198,10 +198,66 @@ function get_flash_message() {
 
 /**
  * Check if value is empty (including zero and false)
- * 
+ *
  * @param mixed $value Value to check
  * @return bool True if empty
  */
 function is_empty($value) {
     return empty($value) && $value !== '0' && $value !== 0;
+}
+
+/**
+ * Get user initials from name
+ *
+ * @param string $name Full name
+ * @return string Initials (e.g., "John Doe" => "JD")
+ */
+function get_user_initials($name) {
+    if (empty($name)) {
+        return '??';
+    }
+
+    $words = explode(' ', trim($name));
+    if (count($words) === 1) {
+        return strtoupper(substr($words[0], 0, 2));
+    }
+
+    return strtoupper(substr($words[0], 0, 1) . substr($words[count($words) - 1], 0, 1));
+}
+
+/**
+ * Convert timestamp to relative time (e.g., "2 hours ago")
+ *
+ * @param string $datetime Date/time string
+ * @return string Relative time
+ */
+function time_ago($datetime) {
+    if (empty($datetime)) {
+        return 'Never';
+    }
+
+    $timestamp = strtotime($datetime);
+    $diff = time() - $timestamp;
+
+    if ($diff < 60) {
+        return 'Just now';
+    } elseif ($diff < 3600) {
+        $mins = floor($diff / 60);
+        return $mins . ' minute' . ($mins > 1 ? 's' : '') . ' ago';
+    } elseif ($diff < 86400) {
+        $hours = floor($diff / 3600);
+        return $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago';
+    } elseif ($diff < 604800) {
+        $days = floor($diff / 86400);
+        return $days . ' day' . ($days > 1 ? 's' : '') . ' ago';
+    } elseif ($diff < 2592000) {
+        $weeks = floor($diff / 604800);
+        return $weeks . ' week' . ($weeks > 1 ? 's' : '') . ' ago';
+    } elseif ($diff < 31536000) {
+        $months = floor($diff / 2592000);
+        return $months . ' month' . ($months > 1 ? 's' : '') . ' ago';
+    } else {
+        $years = floor($diff / 31536000);
+        return $years . ' year' . ($years > 1 ? 's' : '') . ' ago';
+    }
 }
