@@ -255,7 +255,7 @@ function get_role_badge($role) {
  * @param int $per_page
  * @return array
  */
-function get_pagination($total_records, $current_page = 1, $per_page = RECORDS_PER_PAGE) {
+function get_pagination($total_recordgs, $current_page = 1, $per_page = RECORDS_PER_PAGE) {
     $total_pages = ceil($total_records / $per_page);
     $offset = ($current_page - 1) * $per_page;
     
