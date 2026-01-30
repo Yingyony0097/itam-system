@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 /**
- * Utility Helper Functions
+ * Authentication Helper Functions
  * ITAM System - P-line Company
  * Security: REQ-SEC-004, REQ-SEC-006
  */
@@ -14,11 +14,11 @@ function sanitize($data) {
     if (is_array($data)) {
         return array_map('sanitize', $data);
     }
-    
+
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
-    
+
     return $data;
 }
 
@@ -126,57 +126,12 @@ function clear_user_session() {
 }
 
 /**
- * Generate CSRF token (REQ-SEC-007)
- * @return string
- */
-function generate_csrf_token() {
-    if (!isset($_SESSION[CSRF_TOKEN_NAME])) {
-        $_SESSION[CSRF_TOKEN_NAME] = bin2hex(random_bytes(32));
-        $_SESSION[CSRF_TOKEN_NAME . '_time'] = time();
-    }
-    return $_SESSION[CSRF_TOKEN_NAME];
-}
-
-/**
  * Get CSRF token (REQ-SEC-007)
+ * Alias for generate_csrf_token() for backward compatibility
  * @return string
  */
 function csrf_token() {
     return generate_csrf_token();
-}
-
-/**
- * Validate CSRF token (REQ-SEC-007)
- * @param string $token
- * @return bool
- */
-function verify_csrf_token($token) {
-    if (!isset($_SESSION[CSRF_TOKEN_NAME]) || !isset($_SESSION[CSRF_TOKEN_NAME . '_time'])) {
-        return false;
-    }
-    
-    // Check token expiration
-    if (time() - $_SESSION[CSRF_TOKEN_NAME . '_time'] > CSRF_TOKEN_EXPIRE) {
-        unset($_SESSION[CSRF_TOKEN_NAME]);
-        unset($_SESSION[CSRF_TOKEN_NAME . '_time']);
-        return false;
-    }
-    
-    return hash_equals($_SESSION[CSRF_TOKEN_NAME], $token);
-}
-
-/**
- * Redirect to URL
- * @param string $url
- */
-function redirect($url) {
-    if (!headers_sent()) {
-        header("Location: " . $url);
-        exit();
-    } else {
-        echo "<script>window.location.href='" . $url . "';</script>";
-        exit();
-    }
 }
 
 /**
@@ -213,21 +168,6 @@ function get_flash() {
 }
 
 /**
- * Format date for display
- * @param string $date
- * @param string $format
- * @return string
- */
-function format_date($date, $format = DISPLAY_DATE_FORMAT) {
-    if (empty($date) || $date === '0000-00-00') {
-        return '';
-    }
-    
-    $timestamp = strtotime($date);
-    return date($format, $timestamp);
-}
-
-/**
  * Format datetime for display
  * @param string $datetime
  * @param string $format
@@ -237,19 +177,9 @@ function format_datetime($datetime, $format = DISPLAY_DATETIME_FORMAT) {
     if (empty($datetime) || $datetime === '0000-00-00 00:00:00') {
         return '';
     }
-    
+
     $timestamp = strtotime($datetime);
     return date($format, $timestamp);
-}
-
-/**
- * Format currency
- * @param float $amount
- * @param string $currency
- * @return string
- */
-function format_currency($amount, $currency = '$') {
-    return $currency . number_format($amount, 2);
 }
 
 /**
@@ -259,68 +189,6 @@ function format_currency($amount, $currency = '$') {
  */
 function generate_random_string($length = 16) {
     return bin2hex(random_bytes($length / 2));
-}
-
-/**
- * Upload file with validation (REQ-SEC-010)
- * @param array $file ($_FILES array)
- * @param string $destination
- * @param array $allowed_types
- * @return array ['success' => bool, 'filename' => string, 'message' => string]
- */
-function upload_file($file, $destination, $allowed_types = ALLOWED_IMAGE_TYPES) {
-    // Check if file was uploaded
-    if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
-        return ['success' => false, 'message' => 'No file uploaded'];
-    }
-    
-    // Check for upload errors
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        return ['success' => false, 'message' => 'File upload error: ' . $file['error']];
-    }
-    
-    // Validate file size
-    if ($file['size'] > MAX_FILE_SIZE) {
-        return ['success' => false, 'message' => 'File size exceeds maximum limit of 5MB'];
-    }
-    
-    // Validate file type
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mime_type = finfo_file($finfo, $file['tmp_name']);
-    finfo_close($finfo);
-    
-    if (!in_array($mime_type, $allowed_types)) {
-        return ['success' => false, 'message' => 'Invalid file type. Only images allowed.'];
-    }
-    
-    // Validate file extension
-    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if (!in_array($extension, ALLOWED_IMAGE_EXTENSIONS)) {
-        return ['success' => false, 'message' => 'Invalid file extension'];
-    }
-    
-    // Generate unique filename
-    $filename = uniqid() . '_' . time() . '.' . $extension;
-    $filepath = $destination . '/' . $filename;
-    
-    // Move uploaded file
-    if (move_uploaded_file($file['tmp_name'], $filepath)) {
-        return ['success' => true, 'filename' => $filename, 'message' => 'File uploaded successfully'];
-    } else {
-        return ['success' => false, 'message' => 'Failed to move uploaded file'];
-    }
-}
-
-/**
- * Delete file
- * @param string $filepath
- * @return bool
- */
-function delete_file($filepath) {
-    if (file_exists($filepath)) {
-        return unlink($filepath);
-    }
-    return false;
 }
 
 /**
@@ -350,10 +218,10 @@ function get_role_badge($role) {
  * @param int $per_page
  * @return array
  */
-function get_pagination($total_recordgs, $current_page = 1, $per_page = RECORDS_PER_PAGE) {
+function get_pagination($total_records, $current_page = 1, $per_page = RECORDS_PER_PAGE) {
     $total_pages = ceil($total_records / $per_page);
     $offset = ($current_page - 1) * $per_page;
-    
+
     return [
         'total_records' => $total_records,
         'total_pages' => $total_pages,
