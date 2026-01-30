@@ -1,0 +1,18 @@
+{
+    "name": "pline/itam-system",
+    "description": "IT Asset Management System for P-line Company",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "tecnickcom/tcpdf": "^6.6",
+        "phpoffice/phpspreadsheet": "^1.29"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "models/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
